@@ -7,12 +7,14 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using FinancialPlannerBD.Models;
+using System.Data.Entity;
 
 namespace FinancialPlannerBD.Controllers
 {
     [Authorize]
     public class ManageController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -48,6 +50,41 @@ namespace FinancialPlannerBD.Controllers
             {
                 _userManager = value;
             }
+        }
+
+
+        //
+        // GET: /Manage/ChangeName
+        public ActionResult ChangeName()
+        {
+            ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
+            var model = new NameViewModel
+            {
+                DisplayName = user.DisplayName,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
+            return View(model);
+        }
+
+        //
+        // POST: /Manage/ChangeName
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeName(NameViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
+                user.DisplayName = model.DisplayName;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index", "Home");
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         //

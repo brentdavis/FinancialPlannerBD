@@ -25,6 +25,16 @@ namespace FinancialPlannerBD.Models
         public string Purpose { get; set; }
     }
 
+    public class NameViewModel
+    {
+        [Required]
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
+        [Required]
+        public string DisplayName { get; set; }
+    }
+
     public class SetPasswordViewModel
     {
         [Required]

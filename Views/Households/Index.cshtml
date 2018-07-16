@@ -7,7 +7,7 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create") |
     <a href="@Url.Action("Join", "Invitations")">Join a Household!</a> 
 </p>
 <table class="table">
@@ -21,7 +21,7 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.Where(h => h.Deleted = true)) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Name)

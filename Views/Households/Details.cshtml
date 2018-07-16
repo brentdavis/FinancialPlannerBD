@@ -27,15 +27,19 @@
             </dd>
 
         </dl>*@
+
+    <p>Members in Household:</p>
     @foreach (var member in Model.Users)
     {
-        @member.FirstName;
-        @member.LastName;
+        <p>------------</p>
+        <p>@member.FirstName @member.LastName</p>
+        <p>------------</p>
     }
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    <a href="@Url.Action("Create","Invitations", new { houseId = Model.Id})">Invite someone!</a>
+    <a href="@Url.Action("Create","Invitations", new { houseId = Model.Id})">Invite someone!</a> |
+    <a href="@Url.Action("Leave","Households", new { houseId = Model.Id})">Leave Household</a> |
     @Html.ActionLink("Back to List", "Index")
 
 </p>

@@ -130,6 +130,47 @@ namespace FinancialPlannerBD.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
+        public ActionResult Leave(int? houseId)
+        {
+            //Get the users informaiton
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
+            var userRole = roleHelper.ListUserRoles(userId).FirstOrDefault();
+
+            //check if they are the head of household or not
+            if (userRole == "HeadOfHousehold")
+            {
+                //if they are head of household, they can only leave if there are no other members
+                //count how many users in the house
+                var members = db.Users.Where(u => u.HouseholdId == houseId).Count();
+                if (members == 1)
+                {
+                    roleHelper.RemoveUserFromRole(userId, "HeadOfHousehold");
+                    user.HouseholdId = null;
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    //now we have to soft delete this house because ya know...its empty
+                    var household = db.Households.Find(houseId);
+                    household.Deleted = true;
+                    db.Entry(household).State = EntityState.Modified;
+
+                    db.SaveChanges();
+                }
+            }
+            //if they are not they are free to leave
+            else
+            {
+                user.HouseholdId = null;
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

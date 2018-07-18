@@ -62,7 +62,8 @@ namespace FinancialPlannerBD.Controllers
                 //Make invitation, and use the guid to generate us a unique code
                 invitation.Created = DateTime.Now;
                 invitation.Code = Guid.NewGuid().ToString();
-                invitation.Body = "Enter this code into the Join Household screen to join: " + invitation.Code;
+                var callbackUrl = Url.Action("Join", "Invitations", new { userId = user.Id }, protocol: Request.Url.Scheme);
+                invitation.Body = "Enter this code into the Join Household screen to join by clicking <a href=\"" + callbackUrl + "\">here!</a>" + invitation.Code;
 
                 try
                 {

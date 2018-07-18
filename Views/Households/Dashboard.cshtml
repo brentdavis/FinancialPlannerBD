@@ -1,0 +1,60 @@
+﻿
+@model FinancialPlannerBD.Models.Household
+
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>@Html.DisplayFor(model => model.Name)</h2>
+            <h5>@Html.DisplayFor(model => model.Description)</h5>
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>Members in Household:</p>
+            @foreach (var member in Model.Users)
+            {
+                <p>------------</p>
+                <p>@member.FirstName @member.LastName</p>
+
+            }
+            <p>------------</p>
+        </div>
+        <div class="col-md-6">
+            <p>Household Accounts:</p>
+            @foreach (var acc in Model.Accounts)
+            {
+                <div class="card">
+                    <div class="card-header">
+                        @acc.Name
+                    </div>
+                    <div class="card-body">
+                        @acc.Description <br />
+                        Current Balance: @acc.CurrentBalance <br />
+                        @Html.ActionLink("Edit", "Edit", new { id = acc.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = acc.Id })
+                    </div>
+                </div>
+            }
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <a href="@Url.Action("Create","Invitations", new { houseId = Model.Id})">Invite someone!</a> |
+                <a href="@Url.Action("Leave","Households", new { houseId = Model.Id})">Leave Household</a> |
+                <a href="@Url.Action("Index","Home", new { houseId = Model.Id})">Go Back</a>
+            </p>
+        </div>
+        <div class="col-md-6">
+            <a href="@Url.Action("Create","Accounts")">Create a new Account</a>
+            <a href="@Url.Action("Create","Transactions")">Record Transaction</a>
+        </div>
+    </div>
+</div>
+

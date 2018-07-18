@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinancialPlannerBD.Models;
+using Microsoft.AspNet.Identity;
 
 namespace FinancialPlannerBD.Controllers
 {
@@ -39,8 +40,11 @@ namespace FinancialPlannerBD.Controllers
         // GET: Accounts/Create
         public ActionResult Create()
         {
+            //var userId = User.Identity.GetUserId();
+            //var user = db.Users.Find(userId);
+
             ViewBag.BankId = new SelectList(db.Banks, "Id", "Name");
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name");
+            //ViewBag.HouseholdId = user.HouseholdId;
             ViewBag.TypeId = new SelectList(db.AccountTypes, "Id", "Type");
             return View();
         }
@@ -50,17 +54,22 @@ namespace FinancialPlannerBD.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description,HouseholdId,TypeId,BankId,Created,Updated,StartingBalance,CurrentBalance")] Account account)
+        public ActionResult Create([Bind(Include = "Id,Name,Description,HouseholdId,TypeId,BankId,Created,StartingBalance,CurrentBalance")] Account account)
         {
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
             if (ModelState.IsValid)
             {
+                account.Created = DateTime.Now;
+                account.CurrentBalance = account.StartingBalance;
+                account.HouseholdId = (int)user.HouseholdId;
                 db.Accounts.Add(account);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Dashboard", "Households");
             }
 
             ViewBag.BankId = new SelectList(db.Banks, "Id", "Name", account.BankId);
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", account.HouseholdId);
+            //ViewBag.HouseholdId = user.HouseholdId;
             ViewBag.TypeId = new SelectList(db.AccountTypes, "Id", "Type", account.TypeId);
             return View(account);
         }

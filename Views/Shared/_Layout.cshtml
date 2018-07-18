@@ -13,6 +13,9 @@
     @Styles.Render("~/styles/main.css")
     @*@Styles.Render("~/Content/css")*@
     @Scripts.Render("~/bundles/modernizr")
+    <!--Favicon!-->
+    <link runat="server" href="~/favicon.ico" rel="shortcut icon" type="image/ico" />
+    <link runat="server" rel="shortcut icon" href="~/favicon.ico" type="image/x-icon" />
 
 </head>
 <body id="top">
@@ -25,11 +28,11 @@
                     <ul class="navbar-nav ml-auto">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item"><a class="nav-link active" href="@Url.Action("Index","Households")">Households</a></li>
+                            @*<li class="nav-item"><a class="nav-link active" href="@Url.Action("Index","Households")">Households</a></li>*@
+                            <li class="nav-item"><a class="nav-link active" href="@Url.Action("Dashboard","Households")">Households</a></li>                           
                         }
                         @Html.Partial("_LoginPartial")
                     </ul>
-
                 </div>
             </div>
         </nav>

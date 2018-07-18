@@ -38,6 +38,23 @@ namespace FinancialPlannerBD.Controllers
             return View(household);
         }
 
+        // GET: Households/Dashboard
+        public ActionResult Dashboard(int? houseId)
+        {
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            houseId = user.HouseholdId;
+            Household household = db.Households.Find(houseId);
+            if (houseId != null)
+            {
+                return View(household);
+            }
+            else
+            {
+                return RedirectToAction("Join", "Invitations");
+            }
+        }
+
         // GET: Households/Create
         public ActionResult Create()
         {

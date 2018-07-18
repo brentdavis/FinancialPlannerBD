@@ -387,6 +387,7 @@
     <Content Include="Views\Transactions\Index.cshtml" />
     <Content Include="Views\Invitations\Join.cshtml" />
     <Content Include="Views\Manage\ChangeName.cshtml" />
+    <Content Include="Views\Households\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

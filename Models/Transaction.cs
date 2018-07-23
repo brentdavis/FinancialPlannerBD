@@ -9,6 +9,7 @@ namespace FinancialPlannerBD.Models
     {
         public int Id { get; set; }
         public int AccountId { get; set; }
+        public int? BudgetItemId { get; set; }
         public string Name { get; set; }
         public string Memo { get; set; }
         public decimal Amount { get; set; }
@@ -16,7 +17,10 @@ namespace FinancialPlannerBD.Models
         public DateTime? Updated { get; set; }
         public bool Reconciled { get; set; }
         public decimal ReconciledAmount { get; set; }
+        public bool IsDeposit { get; set; }
 
+        public virtual BudgetItem BudgetItem { get; set; }
         public virtual Account Account { get; set; }
+
     }
 }

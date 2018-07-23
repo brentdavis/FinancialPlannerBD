@@ -40,6 +40,7 @@ namespace FinancialPlannerBD.Controllers
         public ActionResult Create()
         {
             ViewBag.AccountId = new SelectList(db.Accounts, "Id", "Name");
+            ViewBag.BudgetItem = new SelectList(db.BudgetItems, "Id", "Name");
             return View();
         }
 
@@ -48,14 +49,34 @@ namespace FinancialPlannerBD.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,AccountId,Name,Memo,Amount,Created,Updated,Reconciled,ReconciledAmount")] Transaction transaction)
+        public ActionResult Create([Bind(Include = "Id,AccountId,Name,Memo,Amount,Created,IsDeposit,BudgetItemId")] Transaction transaction)
         {
+            var Account = db.Accounts.Find(transaction.AccountId);
+            var BudgetId = db.BudgetItems.Find(transaction.BudgetItemId).BudgetId;
+            var Budget = db.Budgets.Find(BudgetId);
+            //var BudgetID = BudgetItem.BudgetId;
+
             if (ModelState.IsValid)
             {
+                transaction.Created = DateTime.Now;
                 db.Transactions.Add(transaction);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                if (transaction.IsDeposit == true)
+                {
+                    Account.CurrentBalance = Account.CurrentBalance + transaction.Amount;
+                    Budget.CurrentBalance = Budget.CurrentBalance + transaction.Amount;
+                }
+                else
+                {
+                    Account.CurrentBalance = Account.CurrentBalance - transaction.Amount;
+                    Budget.CurrentBalance = Budget.CurrentBalance + transaction.Amount;
+                }
+                db.SaveChanges();
+
+                return RedirectToAction("Dashboard", "Households");
             }
+
+            //
 
             ViewBag.AccountId = new SelectList(db.Accounts, "Id", "Name", transaction.AccountId);
             return View(transaction);

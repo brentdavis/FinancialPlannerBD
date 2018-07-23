@@ -48,11 +48,12 @@ namespace FinancialPlannerBD.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,HouseholdId,Name,Description,SpendingTarget,CurrentBalance")] Budget budget)
+        public ActionResult Create([Bind(Include = "Id,HouseholdId,Name,Description,SpendingTarget")] Budget budget)
         {
             if (ModelState.IsValid)
             {
                 db.Budgets.Add(budget);
+                budget.CurrentBalance = 0;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
